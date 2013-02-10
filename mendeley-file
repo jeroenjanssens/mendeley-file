@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+import os
+import sys
+import sqlite3
+import argparse
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Open files associated with a Mendeley citation")
+    parser.add_argument('key', help="Citation key", nargs='+')
+    args = parser.parse_args()
+
+    mendeley_dir = os.path.expanduser("~/.local/share/data/Mendeley Ltd./Mendeley Desktop")
+
+    try:
+        dbfn = None
+        for f in os.listdir(mendeley_dir):
+            if '@' in f:
+                if f.split("@")[-1] == "www.mendeley.com.sqlite":
+                    mendeley_db = os.path.join(mendeley_dir, f)
+    except OSError:
+        print "Could not find Mendeley directory"
+        return 1
+
+    if mendeley_db is None:
+        print "Could not find Mendeley database"
+        return 1
+
+    try:
+        cur = sqlite3.connect(mendeley_db).cursor()
+
+        for key in args.key:
+
+            documents = list(cur.execute("select id from Documents where citationKey == '%s' limit 1" % key))
+            if not documents:
+                print "Could not find any documents with citation key '%s'" % key
+                continue
+
+            for document in documents:
+                doc_id = document[0]
+
+                files = list(cur.execute("select hash from DocumentFiles where documentId == %d" % doc_id))
+                if not files:
+                    print "Document with citation key '%s' has no files associated with it" % key
+                    continue
+
+                for f in files:
+                    file_hash = f[0]
+                    cur.execute("select localUrl from Files where hash = '%s'" % file_hash)
+                    for row in cur:
+                        file_url = row[0]
+                        print "Opening %s" % file_url
+                        os.system("/usr/bin/xdg-open '%s' 2> /dev/null &" % file_url)
+
+        cur.close()
+
+    except sqlite3.OperationalError as e:
+        print "Database error: %s" % e
+
+
+
+if __name__ == '__main__':
+    exit(main())
