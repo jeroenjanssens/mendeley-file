@@ -23,10 +23,12 @@ Integration with VIM
 Let's say you have the following LaTeX text with two citations.
 
 ```latex
-The goal of dimension reduction is to map a high-dimensional data set onto a low-dimensional space \citep{roweis2000nonlinear,tenenbaum2000global}. 
-```	
+The goal of dimension reduction is to map a high-
+dimensional data set onto a low-dimensional space
+\citep{roweis2000nonlinear,tenenbaum2000global}. 
+```
 
-By adding the code below to your `.vimrc`, you can open the file by placing the cursor anywhere on the citation key and pressing `<leader>pdf` (my <leader> is `,`).
+By adding the code below to your `.vimrc`, you can open the file by placing the cursor anywhere on the citation key and pressing `<leader>pdf` (my `<leader>` is the comma).
 
 ```vim
 fun! MendeleyFile()
@@ -45,4 +47,4 @@ Python 2.7+
 
 License
 -------
-BSD
+Copyright (c) Jeroen Janssens. Distributed under the simplified BSD.
