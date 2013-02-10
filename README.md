@@ -47,4 +47,4 @@ Python 2.7+
 
 License
 -------
-Copyright (c) Jeroen Janssens. Distributed under the simplified BSD.
+Copyright (c) [Jeroen Janssens](https://twitter.com/jeroenhjanssens). Distributed under the simplified BSD.
